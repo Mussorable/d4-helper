@@ -6,19 +6,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Theme,
   Toolbar,
   Typography,
   useScrollTrigger,
 } from "@mui/material";
+import makeStyles from "@mui/styles/makeStyles";
 import MenuIcon from "@mui/icons-material/Menu";
 import React from "react";
 import { default as Logo } from "../assets/logo.svg";
-
-declare module "@mui/material/AppBar" {
-  interface AppBarPropsColorOverrides {
-    sapphire: true;
-  }
-}
 
 interface ScrollingProps {
   children: React.ReactElement;
@@ -26,7 +22,16 @@ interface ScrollingProps {
 
 const pages = ["Products", "Pricing", "Blog"];
 
+// Create special .toolbar margin on the div after header
+const useStyles = makeStyles((theme: Theme) => ({
+  toolbarMargin: {
+    ...theme.mixins.toolbar,
+  },
+}));
+
 const Header = () => {
+  const appBarClasses = useStyles();
+
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
     null
   );
@@ -54,7 +59,7 @@ const Header = () => {
   return (
     <>
       <ElevationScroll>
-        <AppBar position="fixed" color="sapphire">
+        <AppBar position="fixed" color="primary">
           <Container maxWidth="xl">
             <Toolbar disableGutters>
               <img
@@ -64,17 +69,17 @@ const Header = () => {
                 height="60"
               />
               <Typography
-                variant="h6"
+                variant="h5"
                 noWrap
                 component="a"
                 href="/"
                 sx={{
                   mr: 2,
                   display: { xs: "none", md: "flex" },
-                  fontFamily: "Poppins, sans-serif",
                   marginLeft: ".2rem",
-                  letterSpacing: ".2px",
-                  fontWeight: 600,
+                  letterSpacing: ".4px",
+                  fontWeight: 700,
+                  fontStyle: "italic",
                   textTransform: "uppercase",
                   color: "white",
                   textDecoration: "none",
@@ -114,7 +119,13 @@ const Header = () => {
                 >
                   {pages.map((page) => (
                     <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Typography textAlign="center">{page}</Typography>
+                      <Button
+                        key={page}
+                        onClick={handleCloseNavMenu}
+                        sx={{ my: 0.5, display: "block" }}
+                      >
+                        {page}
+                      </Button>
                     </MenuItem>
                   ))}
                 </Menu>
@@ -154,6 +165,7 @@ const Header = () => {
           </Container>
         </AppBar>
       </ElevationScroll>
+      <div className={appBarClasses.toolbarMargin} />
     </>
   );
 };

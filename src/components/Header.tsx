@@ -1,47 +1,64 @@
 import {
   AppBar,
   Box,
-  Button,
   Container,
-  IconButton,
-  Menu,
-  MenuItem,
-  Theme,
   Toolbar,
+  Tabs,
+  Tab,
   Typography,
   useScrollTrigger,
+  styled,
 } from "@mui/material";
-import makeStyles from "@mui/styles/makeStyles";
-import MenuIcon from "@mui/icons-material/Menu";
-import React from "react";
+import React, { SyntheticEvent, useState } from "react";
 import { default as Logo } from "../assets/logo.svg";
 
 interface ScrollingProps {
   children: React.ReactElement;
 }
 
-const pages = ["Products", "Pricing", "Blog"];
+interface StyledTabProps {
+  label: string;
+  value: string;
+}
 
-// Create special .toolbar margin on the div after header
-const useStyles = makeStyles((theme: Theme) => ({
-  toolbarMargin: {
-    ...theme.mixins.toolbar,
+const pages = ["Home", "Classes", "Builds", "Skills calculator"];
+
+const AntTabs = styled(Tabs)({
+  "& .MuiTabs-indicator": {
+    backgroundColor: "#d38bf3",
+  },
+});
+
+const AntTab = styled((props: StyledTabProps) => (
+  <Tab disableRipple {...props} />
+))(({ theme }) => ({
+  [theme.breakpoints.up("sm")]: {
+    minWidth: 0,
+  },
+  color: "white",
+  fontSize: "1rem",
+  opacity: 0.9,
+  fontWeight: 600,
+  letterSpacing: ".7px",
+  transition: ".2s",
+  "&:hover": {
+    color: "#FFBF00",
+    opacity: 1,
+  },
+  "&.Mui-selected": {
+    color: "#d38bf3",
+    opacity: 1,
+  },
+  "&.Mui-focusVisible": {
+    backgroundColor: "#3447e4",
   },
 }));
 
 const Header = () => {
-  const appBarClasses = useStyles();
+  const [value, setValue] = useState("home");
 
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null
-  );
-
-  const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorElNav(event.currentTarget);
-  };
-
-  const handleCloseNavMenu = () => {
-    setAnchorElNav(null);
+  const handleChange = (e: SyntheticEvent, newValue: string) => {
+    setValue(newValue);
   };
 
   function ElevationScroll(props: ScrollingProps) {
@@ -87,85 +104,28 @@ const Header = () => {
               >
                 D4 Fast arrow
               </Typography>
-
-              <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
-                <IconButton
-                  size="large"
-                  aria-label="account of current user"
-                  aria-controls="menu-appbar"
-                  aria-haspopup="true"
-                  onClick={handleOpenNavMenu}
-                  color="secondary"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Menu
-                  id="menu-appbar"
-                  anchorEl={anchorElNav}
-                  anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "left",
-                  }}
-                  keepMounted
-                  transformOrigin={{
-                    vertical: "top",
-                    horizontal: "left",
-                  }}
-                  open={Boolean(anchorElNav)}
-                  onClose={handleCloseNavMenu}
-                  sx={{
-                    display: { xs: "block", md: "none" },
-                  }}
-                >
-                  {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                      <Button
-                        key={page}
-                        onClick={handleCloseNavMenu}
-                        sx={{ my: 0.5, display: "block" }}
-                      >
-                        {page}
-                      </Button>
-                    </MenuItem>
-                  ))}
-                </Menu>
-              </Box>
-              <Typography
-                variant="h5"
-                noWrap
-                component="a"
-                href="/"
-                sx={{
-                  mr: 2,
-                  display: { xs: "flex", md: "none" },
-                  fontFamily: "Poppins, sans-serif",
-                  marginLeft: ".2rem",
-                  flexGrow: 1,
-                  letterSpacing: ".2px",
-                  fontWeight: 600,
-                  textTransform: "uppercase",
-                  color: "white",
-                  textDecoration: "none",
-                }}
+              <AntTabs
+                onChange={handleChange}
+                value={value}
+                aria-label="navigation bar"
               >
-                D4 Fast arrow
-              </Typography>
-              <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
                 {pages.map((page) => (
-                  <Button
-                    key={page}
-                    onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: "white", display: "block" }}
-                  >
-                    {page}
-                  </Button>
+                  <AntTab
+                    value={page.toLowerCase().replace(" ", "-")}
+                    key={page.toLowerCase()}
+                    label={page.toLowerCase().replace(" ", "-")}
+                  />
                 ))}
-              </Box>
+              </AntTabs>
             </Toolbar>
           </Container>
         </AppBar>
       </ElevationScroll>
-      <div className={appBarClasses.toolbarMargin} />
+      <Box
+        sx={{
+          minHeight: (theme) => theme.mixins.toolbar,
+        }}
+      ></Box>
     </>
   );
 };
